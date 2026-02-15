@@ -7,10 +7,10 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 
-app = Flask(_name_)
+app = Flask(__name__)
 app.secret_key = "secretkey"
 
-BASE_DIR = os.path.dirname(os.path.abspath(_file_))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.db")
 
 # --- DATABASE INIT ---
@@ -223,6 +223,7 @@ def kamera():
 
 if _name_ == "_main_":
     app.run(debug=True)
+
 
 
 
