@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = "supersecret"
 app.permanent_session_lifetime = datetime.timedelta(minutes=10)
 
-BASE_DIR = os.path.dirname(os.path.abspath(_file_))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB = os.path.join(BASE_DIR, "database.db")
 
 ALLOWED_PLATES = [
@@ -157,5 +157,6 @@ def pay(id):
 
     conn.close()
     return "Banka doğrulama"
+
 
 
