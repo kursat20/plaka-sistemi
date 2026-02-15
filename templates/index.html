@@ -1,80 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ceza Sorgulama Sistemi</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f2f2f2;
-            text-align: center;
-            padding: 40px;
-        }
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 400px;
-            margin: auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-        }
-        input {
-            padding: 10px;
-            width: 80%;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            background: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-        .menu {
-            margin-top: 20px;
-        }
-        .menu a {
-            text-decoration: none;
-            margin: 5px;
-        }
-    </style>
+<title>Ana Sayfa</title>
 </head>
 <body>
 
-<div class="box">
-    <h2>🚗 Ceza Sorgulama</h2>
+<div style="float:right;">
+<script>
+document.write(new Date().toLocaleDateString());
+</script>
+</div>
 
-    <form method="POST">
-        <input type="text" name="plaka" placeholder="Plaka giriniz" required>
-        <br>
-        <button type="submit">Sorgula</button>
-    </form>
+<h1>Hoşgeldin {{ session['user'] }}</h1>
 
-    {% if plaka %}
-        <hr>
-        <h3>Plaka: {{ plaka }}</h3>
-        <h3>Ceza: {{ ceza }} TL</h3>
+<a href="/kamera"><button>Şehir Kamerası</button></a>
+<a href="/odeme"><button>Ödeme Simülasyonu</button></a>
+<a href="/logout"><button>Çıkış Yap</button></a>
 
-        {% if ceza > 0 %}
-            <a href="/odeme_tamamla/{{ plaka }}">
-                <button>Ödeme Yap</button>
-            </a>
-        {% endif %}
-
-        <br><br>
-        <a href="/pdf/{{ plaka }}">
-            <button>PDF Makbuz İndir</button>
-        </a>
-    {% endif %}
-
-    <div class="menu">
-        <hr>
-        <a href="/kamera"><button>Kamera</button></a>
-        <a href="/admin"><button>Admin Panel</button></a>
-    </div>
+</body>
+</html>
 
 </div>
 
