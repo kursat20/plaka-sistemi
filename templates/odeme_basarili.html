@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ödeme Başarılı</title>
-</head>
-<body>
-    <h1>Ödeme Başarılı!</h1>
-    <p>{{ amount }} TL ödendi.</p>
-    <a href="/araclarim">Araçlarım</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Ödeme Başarılı{% endblock %}
+{% block content %}
+<h2>Ödeme Başarılı!</h2>
+<p>İşlem tamamlandı.</p>
+<a href="{{ url_for('home') }}">Anasayfaya Dön</a>
+{% endblock %}
