@@ -76,6 +76,7 @@ if __name__ == "__main__":
 
 @app.route('/kamera')
 def kamera():
-    return "<h1>Kamera Sayfası</h1>"
+    return "<h1>Kamera Sayfası (Simülasyon)</h1><br><a href='/'>Geri Dön</a>"
+
 
 
