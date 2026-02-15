@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import os
 
-app = Flask(_name_)
+app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Session için gerekli
 
 # Base directory
-BASE_DIR = os.path.dirname(os.path.abspath(_file_))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Basit kullanıcı verisi (demo)
 USERS = {
@@ -102,8 +102,5 @@ def sonuc():
     return render_template("sonuc.html")
 
 # Çalıştırma
-if _name_ == "_main_":
+if _name_ == "__main__":
     app.run(debug=True)
-
-
-
