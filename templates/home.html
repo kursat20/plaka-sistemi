@@ -1,16 +1,6 @@
-[19:58, 15.02.2026] Kürşat Cömert: Register
-[19:58, 15.02.2026] Kürşat Cömert: <!DOCTYPE html>
-<html>
-<head>
-    <title>Ana Sayfa</title>
-</head>
-<body>
-    <h1>Merhaba {{ name }}</h1>
-    <ul>
-        <li><a href="/araclarim">Araçlarım</a></li>
-        <li><a href="/banka">Banka</a></li>
-        <li><a href="/kamera">Kamera</a></li>
-        <li><a href="/logout">Çıkış</a></li>
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Anasayfa{% endblock %}
+{% block content %}
+<h1>Merhaba {{ session['name'] }}</h1>
+<p>Burada banka, kamera ve araç menülerine ulaşabilirsiniz.</p>
+{% endblock %}
