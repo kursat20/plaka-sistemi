@@ -1,82 +1,96 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_file
-from reportlab.pdfgen import canvas
-import os
+from flask import Flask, render_template, request, redirect, session, url_for
+import sqlite3
+from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = "gizlisifre"
+app.secret_key = "supersecretkey"
 
-# Sahte ceza verisi
-cezalar = {"34ABC01": 100, "06XYZ99": 250}
-ADMIN_PASSWORD = "2055"
+# Veritabanı oluşturma
+def init_db():
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("""CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                plate TEXT,
+                password TEXT)""")
+    conn.commit()
+    conn.close()
 
-# Ana sayfa
-@app.route('/', methods=['GET', 'POST'])
+init_db()
+
+# Giriş kontrol decorator
+def login_required(f):
+    def wrap(*args, **kwargs):
+        if "user" not in session:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    wrap.__name__ = f.__name__
+    return wrap
+
+@app.route("/")
+def home():
+    return redirect("/login")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        name = request.form["name"]
+        plate = request.form["plate"]
+        password = request.form["password"]
+
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("INSERT INTO users (name, plate, password) VALUES (?, ?, ?)",
+                  (name, plate, password))
+        conn.commit()
+        conn.close()
+
+        return redirect("/login")
+
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        password = request.form["password"]
+
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE password=?", (password,))
+        user = c.fetchone()
+        conn.close()
+
+        if user:
+            session["user"] = user[1]
+            return redirect("/index")
+
+    return render_template("login.html")
+
+@app.route("/admin")
+def admin_login():
+    return "<h1>Admin Paneli</h1>"
+
+@app.route("/index")
+@login_required
 def index():
-    ceza = None
-    plaka = None
-    if request.method == 'POST':
-        plaka = request.form.get('plaka').upper()
-        ceza = cezalar.get(plaka, 0)
-    return render_template('index.html', plaka=plaka, ceza=ceza)
+    return render_template("index.html")
 
-# Ödeme tamamla - ceza sıfırlanıyor
-@app.route('/odeme_tamamla/<plaka>')
-def odeme_tamamla(plaka):
-    if plaka in cezalar:
-        cezalar[plaka] = 0
-    return redirect(url_for('index'))
+@app.route("/kamera")
+@login_required
+def kamera():
+    return render_template("kamera.html")
 
-# PDF makbuz
-@app.route('/pdf/<plaka>')
-def pdf(plaka):
-    ceza = cezalar.get(plaka, 0)
-    pdf_dosya = f"static/ceza_fotolari/{plaka}_ceza.pdf"
-    os.makedirs("static/ceza_fotolari", exist_ok=True)
-    c = canvas.Canvas(pdf_dosya)
-    c.drawString(100, 750, f"Plaka: {plaka}")
-    c.drawString(100, 730, f"Ceza Tutarı: {ceza} TL")
-    if ceza > 0:
-        c.drawString(100, 710, "Durum: Ödenmedi")
-    else:
-        c.drawString(100, 710, "Durum: Ödendi")
-    c.save()
-    return send_file(pdf_dosya, as_attachment=True)
+@app.route("/odeme")
+@login_required
+def odeme():
+    return "<h1>Ödeme Simülasyonu Başarılı ✅</h1>"
 
-# Admin giriş
-@app.route('/admin', methods=['GET','POST'])
-def admin():
-    if request.method == 'POST':
-        sifre = request.form.get('sifre')
-        if sifre == ADMIN_PASSWORD:
-            session['admin'] = True
-            return redirect(url_for('admin_panel'))
-        else:
-            return render_template('login.html', hata="Hatalı şifre")
-    return render_template('login.html')
-
-# Admin paneli
-@app.route('/admin/panel')
-def admin_panel():
-    if not session.get('admin'):
-        return redirect(url_for('admin'))
-    return render_template('admin.html', cezalar=cezalar)
-
-# Ceza sil
-@app.route('/sil/<plaka>')
-def sil(plaka):
-    if not session.get('admin'):
-        return redirect(url_for('admin'))
-    cezalar.pop(plaka, None)
-    return redirect(url_for('admin_panel'))
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
 if __name__ == "__main__":
-    os.makedirs("static/ceza_fotolari", exist_ok=True)
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-
-@app.route('/kamera')
-def kamera():
-    return "<h1>Kamera Sayfası (Simülasyon)</h1><br><a href='/'>Geri Dön</a>"
-
-
+    app.run(host="0.0.0.0", port=8080)
 
