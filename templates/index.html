@@ -1,2 +1,19 @@
-<h1>SITE CALISIYOR</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ceza Sorgulama</title>
+</head>
+<body>
+    <h1>Ceza Sorgulama Sistemi</h1>
 
+    <form method="POST">
+        <input type="text" name="plaka" placeholder="Plaka gir">
+        <button type="submit">Sorgula</button>
+    </form>
+
+    {% if plaka %}
+        <h2>Plaka: {{ plaka }}</h2>
+        <h3>Ceza: {{ ceza }} TL</h3>
+    {% endif %}
+</body>
+</html>
