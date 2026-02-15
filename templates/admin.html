@@ -1,30 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Panel</title>
-</head>
-<body>
-    <h1>Admin Panel</h1>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>İsim</th>
-            <th>Plaka</th>
-            <th>Bakiye</th>
-            <th>İşlemler</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user[0] }}</td>
-            <td>{{ user[1] }}</td>
-            <td>{{ user[2] }}</td>
-            <td>{{ user[7] }}</td>
-            <td>
-                <a href="/delete/{{ user[0] }}">Sil</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <a href="/home">Ana Sayfa</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Admin Paneli{% endblock %}
+{% block content %}
+<h2>Admin Paneli</h2>
+<p>Sadece admin kullanıcı görebilir.</p>
+{% endblock %}
