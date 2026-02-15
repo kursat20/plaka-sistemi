@@ -1,22 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Şehir Kamerası</title>
+    <title>Kamera</title>
 </head>
 <body>
-
-<div style="float:right;">
-<script>
-document.write(new Date().toLocaleDateString());
-</script>
-</div>
-
-<h2>Şehir Kamerası</h2>
-
-<img src="https://picsum.photos/600/400" alt="Kamera Görüntüsü">
-
-<br><br>
-<a href="/index"><button>Geri</button></a>
-
+    <h1>Kamera</h1>
+    <video id="video" width="640" height="480" autoplay></video>
+    <script>
+        const video = document.getElementById('video');
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => { alert("Kamera açılamadı: " + err); });
+    </script>
+    <a href="/home">Ana Sayfa</a>
 </body>
 </html>
