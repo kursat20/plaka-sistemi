@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Giriş</title>
+<title>Giriş</title>
 </head>
-<body style="text-align:center; padding:50px;">
-    <h2>Admin Giriş</h2>
+<body>
 
-    <form method="POST">
-        <input type="password" name="sifre" placeholder="Şifre">
-        <button type="submit">Giriş</button>
-    </form>
+<div style="float:right;">
+<script>
+document.write(new Date().toLocaleDateString());
+</script>
+</div>
 
-    {% if hata %}
-        <p style="color:red;">{{ hata }}</p>
-    {% endif %}
+<h2>Giriş Yap</h2>
+
+<form method="POST">
+    Şifre: <input type="password" name="password"><br><br>
+    <button type="submit">Giriş Yap</button>
+</form>
+
+<br>
+<a href="/register"><button>Kayıt Ol</button></a>
+<a href="/admin"><button>Admin Girişi</button></a>
+
 </body>
 </html>
