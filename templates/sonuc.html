@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sonuç</title>
-</head>
-<body>
-    <h1>{{ message }}</h1>
-    <a href="/home">Ana Sayfa</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Sonuç{% endblock %}
+{% block content %}
+<h2>Sonuç Sayfası</h2>
+<p>Burada yapılan işlemlerin sonuçları gösterilecek.</p>
+{% endblock %
