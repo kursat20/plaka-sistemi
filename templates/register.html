@@ -1,19 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Kayıt</title>
-</head>
-<body>
-    <h1>Kayıt Ol</h1>
-    <form method="POST">
-        <label>İsim:</label><br>
-        <input type="text" name="name" required><br>
-        <label>Plaka (ör: 34ABC123):</label><br>
-        <input type="text" name="plate" required><br>
-        <label>Şifre:</label><br>
-        <input type="password" name="password" required><br><br>
-        <input type="submit" value="Kayıt Ol">
-    </form>
-    <a href="/login">Giriş Yap</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Kayıt Ol{% endblock %}
+{% block content %}
+<h2>Kayıt Ol</h2>
+<form method="post">
+    <label>Kullanıcı Adı:</label>
+    <input type="text" name="username" required><br>
+    <label>Şifre:</label>
+    <input type="password" name="password" required><br>
+    <button type="submit">Kayıt Ol</button>
+</form>
+{% endblock %}
