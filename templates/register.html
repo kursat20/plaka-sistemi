@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Kayıt</title>
+</head>
+<body>
+
+<div style="float:right;">
+<script>
+document.write(new Date().toLocaleDateString());
+</script>
+</div>
+
+<h2>Kayıt Ol</h2>
+
+<form method="POST">
+    İsim: <input type="text" name="name"><br><br>
+    Plaka: <input type="text" name="plate"><br><br>
+    Şifre: <input type="password" name="password"><br><br>
+    <button type="submit">Kayıt Ol</button>
+</form>
+
+<br>
+<a href="/login"><button>Giriş Yap</button></a>
+<a href="/admin"><button>Admin Girişi</button></a>
+
+</body>
+</html>
