@@ -156,4 +156,5 @@ def pay(id):
             return redirect("/araclarim")
 
     conn.close()
-    return "Banka doğrulama
+    return "Banka doğrulama"
+
