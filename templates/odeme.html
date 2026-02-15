@@ -1,21 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ceza Ödeme</title>
-</head>
-<body>
-    <h1>Ceza Ödeme</h1>
-    <form method="POST">
-        <label>Kart No:</label><br>
-        <input type="text" name="card_no" required><br>
-        <label>CVV:</label><br>
-        <input type="text" name="cvv" required><br>
-        <label>Son Kullanma Tarihi:</label><br>
-        <input type="text" name="expiry" placeholder="MM/YY" required><br>
-        <label>Şifre:</label><br>
-        <input type="password" name="password" required><br><br>
-        <input type="submit" value="Öde">
-    </form>
-    <a href="/araclarim">Geri</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Banka{% endblock %}
+{% block content %}
+<h2>Banka İşlemleri</h2>
+<p>Banka işlemleri burada olacak.</p>
+<a href="{{ url_for('odeme_basarili') }}">Ödeme Yap</a>
+{% endblock %}
