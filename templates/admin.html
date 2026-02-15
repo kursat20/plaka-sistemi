@@ -1,8 +1,33 @@
-<h1>Admin Paneli</h1>
-<ul>
-{% for plaka, ceza in cezalar.items() %}
-<li>{{ plaka }} - {{ ceza }} TL 
-<a href="{{ url_for('sil', plaka=plaka) }}">Sil</a></li>
-{% endfor %}
-</ul>
-<a href="{{ url_for('index') }}">Ana Sayfa</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+</head>
+<body style="text-align:center; padding:50px;">
+
+<h2>Admin Panel</h2>
+
+<table border="1" style="margin:auto;">
+    <tr>
+        <th>Plaka</th>
+        <th>Ceza</th>
+        <th>Sil</th>
+    </tr>
+    {% for plaka, ceza in cezalar.items() %}
+    <tr>
+        <td>{{ plaka }}</td>
+        <td>{{ ceza }} TL</td>
+        <td>
+            <a href="/sil/{{ plaka }}">
+                <button>Sil</button>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br><br>
+<a href="/">Ana Sayfa</a>
+
+</body>
+</html>
