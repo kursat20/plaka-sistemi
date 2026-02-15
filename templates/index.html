@@ -1,27 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Ana Sayfa</title>
+    <title>Giriş Sayfası</title>
 </head>
 <body>
-
-<div style="float:right;">
-<script>
-document.write(new Date().toLocaleDateString());
-</script>
-</div>
-
-<h1>Hoşgeldin {{ session['user'] }}</h1>
-
-<a href="/kamera"><button>Şehir Kamerası</button></a>
-<a href="/odeme"><button>Ödeme Simülasyonu</button></a>
-<a href="/logout"><button>Çıkış Yap</button></a>
-
+    <h1>Siteye Hoşgeldiniz</h1>
+    <a href="/login">Giriş Yap</a> | <a href="/register">Kayıt Ol</a>
 </body>
 </html>
-
-</div>
-
-</body>
-</html>
-
