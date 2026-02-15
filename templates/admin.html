@@ -3,31 +3,28 @@
 <head>
     <title>Admin Panel</title>
 </head>
-<body style="text-align:center; padding:50px;">
-
-<h2>Admin Panel</h2>
-
-<table border="1" style="margin:auto;">
-    <tr>
-        <th>Plaka</th>
-        <th>Ceza</th>
-        <th>Sil</th>
-    </tr>
-    {% for plaka, ceza in cezalar.items() %}
-    <tr>
-        <td>{{ plaka }}</td>
-        <td>{{ ceza }} TL</td>
-        <td>
-            <a href="/sil/{{ plaka }}">
-                <button>Sil</button>
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-
-<br><br>
-<a href="/">Ana Sayfa</a>
-
+<body>
+    <h1>Admin Panel</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>İsim</th>
+            <th>Plaka</th>
+            <th>Bakiye</th>
+            <th>İşlemler</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[2] }}</td>
+            <td>{{ user[7] }}</td>
+            <td>
+                <a href="/delete/{{ user[0] }}">Sil</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/home">Ana Sayfa</a>
 </body>
 </html>
