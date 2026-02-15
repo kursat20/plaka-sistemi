@@ -5,7 +5,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 
-app = Flask(_name_)
+app = Flask(__name__)
 app.secret_key = "supersecret"
 app.permanent_session_lifetime = datetime.timedelta(minutes=10)
 
@@ -157,4 +157,5 @@ def pay(id):
 
     conn.close()
     return "Banka doğrulama"
+
 
