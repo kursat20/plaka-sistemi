@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Kamera</title>
-</head>
-<body>
-    <h1>Kamera</h1>
-    <video id="video" width="640" height="480" autoplay></video>
-    <script>
-        const video = document.getElementById('video');
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => { video.srcObject = stream; })
-            .catch(err => { alert("Kamera açılamadı: " + err); });
-    </script>
-    <a href="/home">Ana Sayfa</a>
-</body>
-</html>
+[20:53, 15.02.2026] Kürşat Cömert: Basarılı
+[20:53, 15.02.2026] Kürşat Cömert: {% extends "base.html" %}
+{% block title %}Kamera{% endblock %}
+{% block content %}
+<h2>Kamera Sayfası</h2>
+<p>Kamera görüntüleri burada gösterilecek.</p>
+{% endblock %}
