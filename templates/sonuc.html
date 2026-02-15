@@ -1,9 +1,10 @@
-<h1>Plaka: {{ plaka }}</h1>
-<h2>Ceza Tutarı: {{ ceza }} TL</h2>
-{% if ceza > 0 %}
-<a href="{{ url_for('odeme', plaka=plaka) }}">Ödeme Yap</a> |
-<a href="{{ url_for('pdf', plaka=plaka) }}">PDF Makbuz</a>
-{% else %}
-<p>Ceza yok.</p>
-{% endif %}
-<a href="{{ url_for('index') }}">Ana Sayfa</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sonuç</title>
+</head>
+<body>
+    <h1>{{ message }}</h1>
+    <a href="/home">Ana Sayfa</a>
+</body>
+</html>
