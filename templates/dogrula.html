@@ -1,20 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Banka Doğrulama</title>
-</head>
-<body>
-    <h1>Banka Doğrulama</h1>
-    <form method="POST">
-        <label>Kart No:</label><br>
-        <input type="text" name="card_no" required><br>
-        <label>CVV:</label><br>
-        <input type="text" name="cvv" required><br>
-        <label>Son Kullanma Tarihi:</label><br>
-        <input type="text" name="expiry" required><br>
-        <label>Şifre:</label><br>
-        <input type="password" name="password" required><br>
-        <input type="submit" value="Doğrula">
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Doğrulama{% endblock %}
+{% block content %}
+<h2>Doğrulama Sayfası</h2>
+<p>Kullanıcı doğrulama işlemleri burada yapılacak.</p>
+{% endblock %}
