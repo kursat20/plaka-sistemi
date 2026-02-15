@@ -1,27 +1,38 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_file
-import sqlite3
-import datetime
+from flask import Flask, render_template, request, redirect, session, send_file
+import sqlite3, os, random, datetime
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase import pdfmetrics
-import os
 
-app = Flask(__name__)
-app.secret_key = "secretkey"
+app = Flask(_name_)
+app.secret_key = "supersecret"
+app.permanent_session_lifetime = datetime.timedelta(minutes=10)
 
-# DATABASE
+BASE_DIR = os.path.dirname(os.path.abspath(_file_))
+DB = os.path.join(BASE_DIR, "database.db")
+
+ALLOWED_PLATES = [
+"34ABC01","34ABC02","34ABC03","34ABC04","34ABC05",
+"06XYZ01","06XYZ02","35IZM01","16BUR01","07ANT01"
+]
+
+def connect():
+    return sqlite3.connect(DB)
+
 def init_db():
-    conn = sqlite3.connect("database.db")
+    conn = connect()
     c = conn.cursor()
 
     c.execute("""CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         plate TEXT,
-        password TEXT
+        password TEXT,
+        card TEXT,
+        cvv TEXT,
+        expiry TEXT,
+        balance INTEGER
     )""")
 
     c.execute("""CREATE TABLE IF NOT EXISTS fines(
@@ -36,146 +47,113 @@ def init_db():
 
 init_db()
 
-# Giriş kontrol
+def generate_card():
+    card = str(random.randint(100000000,999999999))
+    cvv = str(random.randint(100,999))
+    expiry = f"{random.randint(1,12):02d}/{random.randint(26,30)}"
+    return card, cvv, expiry
+
 def login_required():
-    if "user_id" not in session:
-        return False
-    return True
+    return "user_id" in session
 
 @app.route("/")
 def home():
     if not login_required():
         return redirect("/login")
-    return redirect("/dashboard")
+    return render_template("home.html", name=session["name"])
 
-# KAYIT
 @app.route("/register", methods=["GET","POST"])
 def register():
-    if request.method == "POST":
+    if request.method=="POST":
         name = request.form["name"]
         plate = request.form["plate"]
         password = request.form["password"]
 
-        conn = sqlite3.connect("database.db")
+        if plate not in ALLOWED_PLATES:
+            return "Plaka sistemde kayıtlı değil!"
+
+        card, cvv, expiry = generate_card()
+
+        conn = connect()
         c = conn.cursor()
-        c.execute("INSERT INTO users (name, plate, password) VALUES (?,?,?)",
-                  (name, plate, password))
+        c.execute("INSERT INTO users (name,plate,password,card,cvv,expiry,balance) VALUES (?,?,?,?,?,?,?)",
+                  (name,plate,password,card,cvv,expiry,1000))
         conn.commit()
         conn.close()
-        return redirect("/login")
+
+        return f"""
+        Kayıt başarılı!<br>
+        Kart No: {card}<br>
+        CVV: {cvv}<br>
+        Son Kullanma: {expiry}<br>
+        <a href='/login'>Giriş Yap</a>
+        """
+
     return render_template("register.html")
 
-# GİRİŞ
 @app.route("/login", methods=["GET","POST"])
 def login():
-    if request.method == "POST":
+    if request.method=="POST":
         password = request.form["password"]
-
-        conn = sqlite3.connect("database.db")
+        conn = connect()
         c = conn.cursor()
         c.execute("SELECT * FROM users WHERE password=?", (password,))
         user = c.fetchone()
         conn.close()
 
         if user:
-            session["user_id"] = user[0]
-            session["plate"] = user[2]
-            return redirect("/dashboard")
+            session.permanent=True
+            session["user_id"]=user[0]
+            session["name"]=user[1]
+            session["plate"]=user[2]
+            return redirect("/")
+
     return render_template("login.html")
 
-# ADMIN GİRİŞ
-@app.route("/admin", methods=["GET","POST"])
-def admin():
-    if request.method == "POST":
-        if request.form["password"] == "admin123":
-            session["admin"] = True
-            return redirect("/admin_panel")
-    return render_template("admin_login.html")
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
-@app.route("/admin_panel")
-def admin_panel():
-    if "admin" not in session:
-        return redirect("/admin")
-
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT * FROM users")
-    users = c.fetchall()
-    conn.close()
-
-    return render_template("admin_panel.html", users=users)
-
-@app.route("/delete/<int:user_id>")
-def delete(user_id):
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("DELETE FROM users WHERE id=?", (user_id,))
-    conn.commit()
-    conn.close()
-    return redirect("/admin_panel")
-
-# DASHBOARD
-@app.route("/dashboard")
-def dashboard():
-    if not login_required():
-        return redirect("/login")
-    now = datetime.datetime.now()
-    return render_template("dashboard.html", now=now)
-
-# ARAÇLARIM / CEZA SORGULAMA
 @app.route("/araclarim")
 def araclarim():
     if not login_required():
         return redirect("/login")
 
-    plate = session["plate"]
-
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT * FROM fines WHERE plate=?", (plate,))
-    fines = c.fetchall()
+    conn=connect()
+    c=conn.cursor()
+    c.execute("SELECT * FROM fines WHERE plate=?", (session["plate"],))
+    fines=c.fetchall()
     conn.close()
 
     return render_template("araclarim.html", fines=fines)
 
-# ÖDEME
-@app.route("/pay/<int:fine_id>")
-def pay(fine_id):
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("UPDATE fines SET status='Paid' WHERE id=?", (fine_id,))
-    conn.commit()
+@app.route("/pay/<int:id>", methods=["POST"])
+def pay(id):
+    if not login_required():
+        return redirect("/login")
+
+    card=request.form["card"]
+    cvv=request.form["cvv"]
+    expiry=request.form["expiry"]
+    password=request.form["password"]
+
+    conn=connect()
+    c=conn.cursor()
+
+    c.execute("SELECT * FROM users WHERE id=?", (session["user_id"],))
+    user=c.fetchone()
+
+    if user[4]==card and user[5]==cvv and user[6]==expiry and user[3]==password:
+        c.execute("SELECT amount FROM fines WHERE id=?", (id,))
+        fine=c.fetchone()
+        if user[7]>=fine[0]:
+            new_balance=user[7]-fine[0]
+            c.execute("UPDATE users SET balance=? WHERE id=?", (new_balance,user[0]))
+            c.execute("UPDATE fines SET status='Paid' WHERE id=?", (id,))
+            conn.commit()
+            conn.close()
+            return redirect("/araclarim")
+
     conn.close()
-    return redirect("/araclarim")
-
-# PDF MAKBUL
-@app.route("/receipt/<int:fine_id>")
-def receipt(fine_id):
-    file = "receipt.pdf"
-    doc = SimpleDocTemplate(file, pagesize=A4)
-
-    elements = []
-
-    style_big = ParagraphStyle(name="Big", fontSize=24, textColor=colors.black)
-    style_stamp = ParagraphStyle(name="Stamp", fontSize=50, textColor=colors.red)
-
-    elements.append(Paragraph("CEZA MAKBUZU", style_big))
-    elements.append(Spacer(1,20))
-
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT * FROM fines WHERE id=?", (fine_id,))
-    fine = c.fetchone()
-    conn.close()
-
-    elements.append(Paragraph(f"Tutar: {fine[2]} TL", style_big))
-    elements.append(Spacer(1,20))
-
-    if fine[3] == "Paid":
-        elements.append(Paragraph("ÖDENDİ", style_stamp))
-
-    doc.build(elements)
-    return send_file(file, as_attachment=True)
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    return "Banka doğrulama
