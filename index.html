@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Plaka Sistemi</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<h1>Plaka Sistemi</h1>
+
+<form method="post">
+<input type="text" name="plaka" placeholder="Plakayı girin" required>
+<button type="submit">Sorgula</button>
+</form>
+
+<h2>Kamera Görüntüsü</h2>
+<video id="video" width="640" height="480" autoplay></video>
+
+<script>
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => { document.getElementById('video').srcObject = stream; })
+.catch(err => console.error(err));
+</script>
+
+{% if plaka %}
+<h2>Plaka: {{ plaka }}</h2>
+<h3>Ceza Tutarı: {{ ceza }} TL</h3>
+
+{% if ceza > 0 %}
+<button id="odemeBtn">Ödeme Yap</button>
+
+<div id="odemeAnim" style="width:300px;height:20px;background:#ddd;margin-top:10px; display:none;">
+    <div id="bar" style="width:0%;height:100%;background:red"></div>
+</div>
+
+<div id="odemeBasarili" style="display:none; margin-top:10px;">
+    <h3>Ödeme Başarılı!</h3>
+    <a href="{{ url_for('index') }}">Ana Sayfa</a>
+</div>
+
+<script>
+document.getElementById('odemeBtn').addEventListener('click', () => {
+    document.getElementById('odemeAnim').style.display = 'block';
+    let w = 0;
+    let bar = document.getElementById('bar');
+    let interval = setInterval(() => {
+        w += 2;
+        bar.style.width = w + '%';
+        if(w>=100){
+            clearInterval(interval);
+            // Ödeme tamamlandığında server cezasını sıfırla
+            window.location.href = "/odeme_tamamla/{{ plaka }}";
+        }
+    },50);
+});
+</script>
+
+<a href="{{ url_for('pdf', plaka=plaka) }}">PDF Makbuz</a>
+{% else %}
+<p>Ceza yok.</p>
+{% endif %}
+{% endif %}
+
+<a href="{{ url_for('admin') }}">Admin Girişi</a>
+</body>
+</html>

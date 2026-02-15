@@ -1,0 +1,9 @@
+<h1>Admin Girişi</h1>
+{% if hata %}
+<p style="color:red">{{ hata }}</p>
+{% endif %}
+<form method="post">
+<input type="password" name="sifre" placeholder="Şifre">
+<button type="submit">Giriş</button>
+</form>
+<a href="{{ url_for('index') }}">Ana Sayfa</a>

@@ -1,0 +1,8 @@
+<h1>Admin Paneli</h1>
+<ul>
+{% for plaka, ceza in cezalar.items() %}
+<li>{{ plaka }} - {{ ceza }} TL 
+<a href="{{ url_for('sil', plaka=plaka) }}">Sil</a></li>
+{% endfor %}
+</ul>
+<a href="{{ url_for('index') }}">Ana Sayfa</a>

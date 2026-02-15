@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ödeme Başarılı</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<h1>Ödeme Başarılı!</h1>
+
+<p><strong>Plaka:</strong> {{ plaka }}</p>
+<p><strong>Ceza Tutarı:</strong> {{ ceza }} TL</p>
+<p style="color:green;"><strong>Durum:</strong> Ödendi</p>
+
+<a href="{{ url_for('index') }}">Ana Sayfa</a>
+</body>
+</html>
