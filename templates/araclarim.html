@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Araçlarım</title>
+</head>
+<body>
+    <h1>Araçlarım / Ceza Sorgulama</h1>
+    <table border="1">
+        <tr>
+            <th>Ceza ID</th>
+            <th>Tutar</th>
+            <th>Durum</th>
+            <th>İşlem</th>
+        </tr>
+        {% for fine in fines %}
+        <tr>
+            <td>{{ fine[0] }}</td>
+            <td>{{ fine[2] }} TL</td>
+            <td>{{ fine[3] }}</td>
+            <td>
+                <a href="/pay/{{ fine[0] }}">Öde</a> |
+                <a href="/receipt/{{ fine[0] }}">Makbuz</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/home">Ana Sayfa</a>
+</body>
+</html>
